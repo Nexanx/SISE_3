@@ -1,9 +1,10 @@
 from tabnet import *
 from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, classification_report
+import seaborn as sns
 
-
-if __name__ == "__main__":
-    
+def main(): 
     X, y, cat_idxs, cat_dims = TabNetModel.load_secondary_mushroom()
 
     # 2) split 60/40:
@@ -26,7 +27,7 @@ if __name__ == "__main__":
     print("X_train_full:", X_train.shape)  # ~60% danych
     print("X_valid:", X_valid.shape)            # ~20% danych
     print("X_test:", X_test.shape)              # ~20% danych
-
+    
     model = TabNetModel(
         input_dim = X_train.shape[1],   
         output_dim = 2,                   
@@ -60,10 +61,10 @@ if __name__ == "__main__":
         y_train = y_train,
         X_valid = X_valid,
         y_valid = y_valid,
-        max_epochs = 100,
+        max_epochs = 10,
         batch_size = 512,
         virtual_batch_size = 64,
-        loss_fn = nn.CrossEntropyLoss(),
+        loss_fn = torch.nn.CrossEntropyLoss(),
         eval_metric = ["accuracy"],
         patience = 0,
         weights = 1
@@ -71,5 +72,43 @@ if __name__ == "__main__":
 
     # Po treningu:
     preds = model.predict(X_test)
-    test_acc = (preds == y_test).mean()
-    print("Test accuracy:", test_acc)
+    
+    
+  
+    history_df = pd.DataFrame.from_dict(model.model.history.history)
+
+
+    plt.figure(figsize=(10, 5))
+    plt.plot(history_df['loss'], label='Train Loss')
+    
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.title('Loss over Epochs')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+    # Wykres accuracy
+    if 'valid_accuracy' in history_df.columns:
+        plt.figure(figsize=(10, 5))
+        plt.plot(history_df['valid_accuracy'], label='Val Accuracy')
+        plt.xlabel('Epoch')
+        plt.ylabel('Accuracy')
+        plt.title('Validation Accuracy')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+
+    cm = confusion_matrix(y_test, preds)
+
+    plt.figure(figsize=(6, 4))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+                 xticklabels=['edible', 'poisonous'], yticklabels=['edible', 'poisonous'])
+    plt.xlabel('Predicted')
+    plt.ylabel('Actual')
+    plt.title('Confusion Matrix')
+    plt.show()
+    print(classification_report(y_test, preds, digits=4, target_names=['edible', 'poisonous']))
+
+if __name__ == "__main__":
+    main()

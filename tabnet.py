@@ -120,7 +120,7 @@ class TabNetModel:
 
         # 4) Kodujemy y: 'e'→0, 'p'→1
         y = y_ser.map({'e': 0, 'p': 1}).values.astype(np.int64)
-
+       
         # 5) Znajdujemy kolumny kategoryczne i tworzymy cat_idxs oraz cat_dims
         cat_idxs = []
         cat_dims = []
@@ -140,7 +140,6 @@ class TabNetModel:
 
         # 6) Konwertujemy na NumPy array
         X = X_df.values  # dtype: float32 i int32
-
         return X, y, cat_idxs, cat_dims
 
     def train_model(
@@ -182,7 +181,6 @@ class TabNetModel:
             loss_fn = torch.nn.CrossEntropyLoss()
         if eval_metric is None:
             eval_metric = ["accuracy"]
-
         eval_set = []
         eval_name = []
         eval_metric_list = []
