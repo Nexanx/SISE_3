@@ -4,6 +4,11 @@ import pandas as pd
 import torch
 import torch.nn as nn
 from ucimlrepo import fetch_ucirepo
+import pickle
+import zipfile
+import io
+import os
+
 
 class TabNetModel:
     def __init__(
@@ -210,3 +215,27 @@ class TabNetModel:
         Zwraca numpy.array z przewidywanymi etykietami (0,1,...).
         """
         return self.model.predict(X_test)
+    
+    def save(self,path:str) -> None:
+        self.model.save_model("weights")
+        pickle_bytes = pickle.dumps(self)
+
+        with zipfile.ZipFile(path, "w") as z:
+            z.write("weights.zip")
+            z.writestr("config.pkl",pickle_bytes)
+        
+        os.remove("weights.zip")
+    
+    @staticmethod
+    def load(path:str):
+        with zipfile.ZipFile(path, "r") as z:
+            
+            pickle_bytes = z.read("config.pkl")
+            obj = pickle.loads(pickle_bytes)
+      
+            weights_bytes = z.read("weights.zip")
+            weights_buffer = io.BytesIO(weights_bytes)
+
+        obj.model.load_model(weights_buffer)
+               
+        return obj
