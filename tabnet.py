@@ -157,7 +157,6 @@ class TabNetModel:
         patience: int = 10,
         weights = 0,
         drop_last: bool = False,
-        num_workers: int = 0,
         callbacks: list = None
     ):
         """
@@ -205,7 +204,6 @@ class TabNetModel:
             weights=weights,
             loss_fn=loss_fn,
             drop_last=drop_last,
-            num_workers=num_workers,
             callbacks=callbacks
         )
 
