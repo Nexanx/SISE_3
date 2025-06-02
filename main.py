@@ -40,8 +40,8 @@ def main():
             output_dim = 2,                   
             cat_idxs = cat_idxs,
             cat_dims = cat_dims,
-            n_d = 8,
-            n_a = 8,
+            n_d = 512,
+            n_a = 512,
             n_steps = 3,
             gamma = 1.3,
             lambda_sparse = 1e-3,
@@ -67,12 +67,12 @@ def main():
             y_train = y_train,
             X_valid = X_valid,
             y_valid = y_valid,
-            max_epochs = 10,
-            batch_size = 512,
-            virtual_batch_size = 64,
+            max_epochs = 150,
+            batch_size = 1024,
+            virtual_batch_size = 512,
             loss_fn = torch.nn.CrossEntropyLoss(),
             eval_metric = ["accuracy"],
-            patience = 0,
+            patience = 50,
             weights = 1
         )
     elif args.load:
