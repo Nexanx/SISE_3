@@ -42,22 +42,12 @@ def main():
             cat_dims = cat_dims,
             n_d = 256,
             n_a = 256,
-            n_steps = 3,
-            gamma = 1.3,
-            lambda_sparse = 1e-3,
-            mask_type = "entmax",
-            cat_emb_dim = 1,
-            n_independent = 2,
-            n_shared = 2,
             momentum = 0.04,
             optimizer_fn = torch.optim.Adam,
             optimizer_params = {"lr": 2e-2, "weight_decay": 1e-4},
             scheduler_fn = torch.optim.lr_scheduler.StepLR,
             scheduler_params = {"step_size": 10, "gamma": 0.95},
             verbose = 1,
-            device_name = "auto",
-            n_shared_decoder = 1,
-            n_indep_decoder = 1
         )
          # Trening z walidacją:
         model.train_model(
